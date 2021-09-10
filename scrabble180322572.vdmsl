@@ -1,0 +1,90 @@
+-- CSC2021 Coursework Semester 2 2019
+-- Name: Dimo Dimchev
+-- StdNo: b8032257
+
+
+
+--Enjoy !
+values
+scoreMap: ScoreMap =  {|->}; -- scoreMap Added
+
+types
+
+Tile = char
+inv t == t in set tileSet;
+
+Word = seq of Tile;
+
+Dictionary = set of Word;
+
+LetterMap = map char to nat;
+Player = seq of Tile;
+ScoreMap = map seq of Tile to nat;
+
+state Scorer of
+theScore: ScoreMap
+thePoints: LetterMap -- points scored for each tile
+theTiles: LetterMap -- initial distribution of tiles 
+theWords: Dictionary
+inv mk_Scorer(theScore,thePoints,theTiles,theWords) ==
+	dom thePoints = tileSet and dom theTiles = tileSet
+	and theWords <> {}
+init s ==
+	s = mk_Scorer(scoreMap,pointsMap, tilesLeft, smallWords )
+end;
+
+functions--   seq      map       
+GetWordScore: Word * LetterMap -> nat
+GetWordScore(word,points) == 
+if word=[] then 0 
+else
+ points(hd word)+GetWordScore(tl word,points)
+ measure len word
+ ;
+
+
+Occurrences: Tile * Word -> nat
+Occurrences(tile,word) == len[word(i) | i in set inds word & word(i) = tile];
+
+EnoughTiles: Word * LetterMap -> bool
+EnoughTiles(word, tiles) == forall i in seq word & 
+if word =[] then true
+else (Occurrences(i,word)<=tiles(i))
+;
+
+ValidWord: Word * Dictionary -> bool -- This version does not completely check for the places of the words only for their occurances
+ValidWord(word, dictionary) == 
+if exists l in seq word & l = '_' then
+
+forall c in seq word & (c = '_') or (exists dword in set dictionary & (len dword = len word)
+and
+exists a in seq dword & a=c)
+
+else word in set dictionary;
+
+  
+operations
+
+RemoveTiles: Word ==> ()
+RemoveTiles(word) ==
+theTiles := theTiles ++
+{ t |-> theTiles(t) - Occurrences (t, word) | t in set dom theTiles
+& t in set elems word };
+
+
+ScoreWord: Player * Word  ==> ()
+ScoreWord(player,word) ==
+(theScore := theScore ++ {player|->(theScore(player))+(GetWordScore(word,thePoints))}
+;
+RemoveTiles(word)
+;
+)
+pre EnoughTiles(word,theTiles) and ValidWord(word, theWords)
+;
+
+
+AddPlayer: Player ==> ()
+AddPlayer(player) == theScore := theScore ++ {player|->0}
+;
+
+
