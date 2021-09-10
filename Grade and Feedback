@@ -1,0 +1,16 @@
+Grade - 87.5% (14/16)
+Feedback:
+Individual Feedback for "VDM modelling"
+Write your comments here.
+
+Q1: An Excellent Solution to Q1. Well done
+
+Q2: An Excellent Solution to Q2. Well done
+
+Q3: An Excellent Solution to Q3. Well done
+
+Q4: In AddPlayer, you need to have a precondition to check that the player doesn’t already exist in the map, so you don’t end up adding the same player twice and Player is not set to token.
+
+Q5: Precondition is missing(pre p in set dom theScores and). Otherwise, a very good answer.
+
+Mr A. Ejem
